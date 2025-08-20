@@ -2,9 +2,7 @@ KERNEL_MODULES_DIR=/etc/modprobe.d
 BIN_DIR=/usr/local/bin
 SERVICE_DIR=/lib/systemd/system
 CARGO_DIR=/home/pi/.cargo/bin
-LIBRESPOT_VERSION=0.3.1
-LIBRESPOT_TAR_FILE=v${LIBRESPOT_VERSION}.tar.gz
-LIBRESPOT_SRC_DIR=${PWD}/librespot-${LIBRESPOT_VERSION}
+LIBRESPOT_SRC_DIR=${PWD}/librespot
 LIBRESPOT_BIN_DIR=${LIBRESPOT_SRC_DIR}/target/release
 
 setup: \
@@ -36,10 +34,10 @@ install-cargo:
 	curl https://sh.rustup.rs -sSf | sh
 
 install-librespot:
-	sudo apt-get install -y build-essential libasound2-dev
+	sudo apt-get install -y build-essential libasound2-dev libssl-dev
+	
+	git clone -b dev https://github.com/librespot-org/librespot.git
 
-	wget https://github.com/librespot-org/librespot/archive/refs/tags/v${LIBRESPOT_VERSION}.tar.gz
-	tar -xf ${LIBRESPOT_TAR_FILE}
 	${CARGO_DIR}/cargo build --manifest-path=${LIBRESPOT_SRC_DIR}/Cargo.toml --release --features alsa-backend
 	sudo cp -f ${LIBRESPOT_BIN_DIR}/librespot ${BIN_DIR}/.
 
